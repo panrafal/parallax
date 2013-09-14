@@ -22,7 +22,11 @@
     scalarX: 10.0,
     scalarY: 10.0,
     frictionX: 0.1,
-    frictionY: 0.1
+    frictionY: 0.1,
+    useTopLeft: false,
+    usePixels: true,
+    forceContextStyle: false,
+    forceLayerStyle: false
   };
 
   function Plugin(element, options) {
@@ -150,22 +154,24 @@
   Plugin.prototype.initialise = function() {
 
     // Configure Styles
-    if (this.$context.css('position') === 'static') {
+    if (this.forceContextStyle && this.$context.css('position') === 'static') {
       this.$context.css({
         position:'relative'
       });
     }
-    this.$layers.css({
-      position:'absolute',
-      display:'block',
-      height:'100%',
-      width:'100%',
-      left: 0,
-      top: 0
-    });
-    this.$layers.first().css({
-      position:'relative'
-    });
+    if (this.forceLayerStyle) {
+      this.$layers.css({
+        position:'absolute',
+        display:'block',
+        height:'100%',
+        width:'100%',
+        left: 0,
+        top: 0
+      });
+      this.$layers.first().css({
+        position:'relative'
+      });
+    }
 
     // Cache Depths
     this.$layers.each($.proxy(function(index, element) {
@@ -289,13 +295,18 @@
   };
 
   Plugin.prototype.setPosition = function(element, x, y) {
-    x += '%';
-    y += '%';
+    if (this.usePixels) {
+      x = x/100 * this.ow + 'px';
+      y = y/100 * this.oh + 'px';
+    } else {
+      x += '%';
+      y += '%';
+    }
     if (this.transform3DSupport) {
       this.css(element, 'transform', 'translate3d('+x+','+y+',0)');
     } else if (this.transform2DSupport) {
       this.css(element, 'transform', 'translate('+x+','+y+')');
-    } else {
+    } else if (this.useTopLeft) {
       element.style.left = x;
       element.style.top = y;
     }
