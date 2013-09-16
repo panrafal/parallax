@@ -26,7 +26,8 @@
     useTopLeft: false,
     usePixels: true,
     forceContextStyle: false,
-    forceLayerStyle: false
+    forceLayerStyle: false,
+    depthOffset: 0
   };
 
   function Plugin(element, options) {
@@ -350,7 +351,7 @@
     this.vx += (this.mx - this.vx) * this.frictionX;
     this.vy += (this.my - this.vy) * this.frictionY;
     for (var i = 0, l = this.$layers.length; i < l; i++) {
-      var depth = this.depths[i];
+      var depth = this.depths[i] + this.depthOffset;
       var layer = this.$layers[i];
       var xOffset = this.vx * depth * (this.invertX ? -1 : 1);
       var yOffset = this.vy * depth * (this.invertY ? -1 : 1);
