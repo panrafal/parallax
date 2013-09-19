@@ -348,14 +348,18 @@
     if (!isNaN(parseFloat(this.limitY))) {
       this.my = this.clamp(this.my, -this.limitY, this.limitY);
     }
-    this.vx += (this.mx - this.vx) * this.frictionX;
-    this.vy += (this.my - this.vy) * this.frictionY;
-    for (var i = 0, l = this.$layers.length; i < l; i++) {
-      var depth = this.depths[i] + this.depthOffset;
-      var layer = this.$layers[i];
-      var xOffset = this.vx * depth * (this.invertX ? -1 : 1);
-      var yOffset = this.vy * depth * (this.invertY ? -1 : 1);
-      this.setPosition(layer, xOffset, yOffset);
+    if (Math.abs(this.mx - this.vx) > 0.1
+        || Math.abs(this.my - this.vy) > 0.1
+      ) {
+      this.vx += (this.mx - this.vx) * this.frictionX;
+      this.vy += (this.my - this.vy) * this.frictionY;
+      for (var i = 0, l = this.$layers.length; i < l; i++) {
+        var depth = this.depths[i] + this.depthOffset;
+        var layer = this.$layers[i];
+        var xOffset = this.vx * depth * (this.invertX ? -1 : 1);
+        var yOffset = this.vy * depth * (this.invertY ? -1 : 1);
+        this.setPosition(layer, xOffset, yOffset);
+      }
     }
     this.raf = requestAnimationFrame(this.onAnimationFrame);
   };
