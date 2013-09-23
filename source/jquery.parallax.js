@@ -180,8 +180,8 @@
     }, this));
 
     // Hardware Accelerate Elements
-    this.accelerate(this.$context);
-    this.accelerate(this.$layers);
+    if (this.forceContextStyle) this.accelerate(this.$context);
+    if (this.forceLayerStyle) this.accelerate(this.$layers);
 
     // Setup
     this.updateDimensions();
